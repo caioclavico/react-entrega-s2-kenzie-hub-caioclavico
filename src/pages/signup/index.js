@@ -7,15 +7,16 @@ import {
   Box,
 } from "@material-ui/core";
 import { ThemeProvider } from "@material-ui/core/styles";
-import { useHistory } from "react-router";
+import { useHistory, Redirect } from "react-router";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import api from "../../services/api";
 import Logo from "../../components/Logo";
+import themeDefault from "../../styles/theme";
 
-function Signup({ theme }) {
+function Signup({ setAuth, auth }) {
   const history = useHistory();
 
   const schema = yup.object().shape({
@@ -51,6 +52,10 @@ function Signup({ theme }) {
     formState: { errors },
   } = useForm({ resolver: yupResolver(schema) });
 
+  if (auth) {
+    return <Redirect to="/dashboard" />;
+  }
+
   const handleSignIn = ({ name, email, password, bio, contact }) => {
     const user = {
       name,
@@ -71,7 +76,7 @@ function Signup({ theme }) {
     // johndoe@email.com
   };
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={themeDefault}>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box

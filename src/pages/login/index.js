@@ -10,12 +10,13 @@ import { ThemeProvider } from "@material-ui/core/styles";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { useHistory } from "react-router-dom";
+import { useHistory, Redirect } from "react-router-dom";
 import Logo from "../../components/Logo";
 import api from "../../services/api";
 import { toast } from "react-hot-toast";
+import themeDefault from "../../styles/theme";
 
-function Login({ theme }) {
+function Login({ auth, setAuth }) {
   const history = useHistory();
 
   const schema = yup.object().shape({
@@ -35,15 +36,27 @@ function Login({ theme }) {
     formState: { errors },
   } = useForm({ resolver: yupResolver(schema) });
 
+  if (auth) {
+    return <Redirect to="/dashboard" />;
+  }
+
   const handleLogin = (data) => {
     api
       .post("/sessions", data)
-      .then((response) => console.log(response.data))
+      .then((response) => {
+        console.log(response.data.user);
+        const { token, user } = response.data;
+        localStorage.clear();
+        localStorage.setItem("KenzieHub:token", JSON.stringify(token));
+        localStorage.setItem("KenzieHub:user", JSON.stringify(user));
+        setAuth(true);
+        history.push("/dashboard");
+      })
       .catch((err) => toast.error("Usuário não encontrado"));
     // johndoe@email.com
   };
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={themeDefault}>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
 
