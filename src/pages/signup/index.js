@@ -5,6 +5,11 @@ import {
   TextField,
   Typography,
   Box,
+  FormControl,
+  FormLabel,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
 } from "@material-ui/core";
 import { ThemeProvider } from "@material-ui/core/styles";
 import { useHistory, Redirect } from "react-router";
@@ -15,9 +20,17 @@ import { toast } from "react-hot-toast";
 import api from "../../services/api";
 import Logo from "../../components/Logo";
 import themeDefault from "../../styles/theme";
+import { useState } from "react";
 
 function Signup({ setAuth, auth }) {
   const history = useHistory();
+  const [course_module, setCourse_module] = useState(
+    "Primeiro módulo (Introdução ao Frontend)"
+  );
+
+  const handleChange = (event) => {
+    setCourse_module(event.target.value);
+  };
 
   const schema = yup.object().shape({
     name: yup
@@ -63,14 +76,14 @@ function Signup({ setAuth, auth }) {
       password,
       bio,
       contact,
-      course_module: "Segundo Módulo (Frontend avançado)",
+      course_module,
     };
     // adicionar o course_module
     api
       .post("/users", user)
       .then((response) => {
         console.log(response.data);
-        return history.push("/login");
+        return history.push("/");
       })
       .catch((err) => toast.error("Usuário já cadastrado"));
     // johndoe@email.com
@@ -159,6 +172,41 @@ function Signup({ setAuth, auth }) {
               error={!!errors.contact?.message}
             />
             {/* colocar botoes de seleção */}
+
+            <FormControl component="fieldset">
+              <FormLabel component="legend">Selecionar Módulo</FormLabel>
+              <RadioGroup
+                row
+                aria-label="gender"
+                name="controlled-radio-buttons-group"
+                value={course_module}
+                onChange={handleChange}
+                sx={{
+                  justifyContent: "center",
+                }}
+              >
+                <FormControlLabel
+                  value="Primeiro módulo (Introdução ao Frontend)"
+                  control={<Radio />}
+                  label="Modulo 1"
+                />
+                <FormControlLabel
+                  value="Segundo módulo (Frontend Avançado)"
+                  control={<Radio />}
+                  label="Modulo 2"
+                />
+                <FormControlLabel
+                  value="Terceiro módulo (Introdução ao Backend)"
+                  control={<Radio />}
+                  label="Modulo 3"
+                />
+                <FormControlLabel
+                  value="Quarto módulo (Backend Avançado)"
+                  control={<Radio />}
+                  label="Modulo 4"
+                />
+              </RadioGroup>
+            </FormControl>
 
             <TextField
               margin="normal"

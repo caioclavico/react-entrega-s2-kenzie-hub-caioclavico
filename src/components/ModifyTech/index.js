@@ -30,7 +30,7 @@ const style = {
   borderRadius: "5px",
 };
 
-export default function AddTech({ open, handleClose, apiGet }) {
+export default function ModifyTech({ open, handleClose, apiGet, techId }) {
   const [status, setStatus] = React.useState("Iniciante");
 
   const handleChange = (event) => {
@@ -46,6 +46,20 @@ export default function AddTech({ open, handleClose, apiGet }) {
     handleSubmit,
     formState: { errors },
   } = useForm({ resolver: yupResolver(schema) });
+
+  const handleRemove = () => {
+    const token = JSON.parse(localStorage.getItem("KenzieHub:token"));
+    handleClose();
+    api
+      .delete(`/users/techs/${techId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((_) => {
+        toast.success("Tecnologia removida com sucesso");
+        apiGet();
+      })
+      .catch((err) => console.log(err));
+  };
 
   const handleSignIn = ({ title }) => {
     const user = { title, status };
@@ -63,7 +77,6 @@ export default function AddTech({ open, handleClose, apiGet }) {
       })
       .catch((err) => console.log(err));
   };
-
   return (
     <Modal
       open={open}
@@ -98,37 +111,44 @@ export default function AddTech({ open, handleClose, apiGet }) {
           >
             <FormControlLabel
               value="Iniciante"
-              control={<Radio />}
+              control={<Radio color="secondary" />}
               label="Iniciante"
             />
             <FormControlLabel
               value="Intermediário"
-              control={<Radio />}
+              control={<Radio color="secondary" />}
               label="Intermediário"
             />
             <FormControlLabel
               value="Avançado"
-              control={<Radio />}
+              control={<Radio color="secondary" />}
               label="Avançado"
             />
           </RadioGroup>
         </FormControl>
-
-        <Button type="submit" fullWidth variant="button" sx={{ mt: 3, mb: 2 }}>
-          Cadastrar
-        </Button>
-        {/* <Button
-          //   onClick={() => history.push("/signup")}
-          type="button"
-          fullWidth
-          variant="buttonGray"
-          sx={{
-            mt: 3,
-            mb: 2,
-          }}
-        >
-          Excluir
-        </Button> */}
+        <Box display="flex">
+          <Button
+            type="submit"
+            fullWidth
+            variant="button"
+            color="secondary"
+            sx={{ mt: 3, mb: 2 }}
+          >
+            Salvar Alterações
+          </Button>
+          <Button
+            onClick={handleRemove}
+            type="button"
+            fullWidth
+            variant="buttonGray"
+            sx={{
+              mt: 3,
+              mb: 2,
+            }}
+          >
+            Excluir
+          </Button>
+        </Box>
       </Box>
     </Modal>
   );

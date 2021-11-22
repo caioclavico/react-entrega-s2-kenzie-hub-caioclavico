@@ -77,11 +77,11 @@ function Dashboard({ auth }) {
         >
           <Container>
             <MyTech apiGet={apiGet} />
-            <MyTechCards techs={techs} />
+            <MyTechCards techs={techs} apiGet={apiGet} />
           </Container>
           <Container>
             <MyWork apiGet={apiGet} />
-            <MyWorkCards works={works} />
+            <MyWorkCards works={works} apiGet={apiGet} />
           </Container>
         </Box>
       </Container>

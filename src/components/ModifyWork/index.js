@@ -19,7 +19,7 @@ const style = {
   borderRadius: "5px",
 };
 
-export default function AddWork({ open, handleClose, apiGet }) {
+export default function ModifyWork({ open, handleClose, apiGet, workId }) {
   const schema = yup.object().shape({
     title: yup.string().required("Campo obrigatório"),
     description: yup.string().required("Campo obrigatório"),
@@ -30,6 +30,20 @@ export default function AddWork({ open, handleClose, apiGet }) {
     handleSubmit,
     formState: { errors },
   } = useForm({ resolver: yupResolver(schema) });
+
+  const handleRemove = () => {
+    const token = JSON.parse(localStorage.getItem("KenzieHub:token"));
+    handleClose();
+    api
+      .delete(`/users/works/${workId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((_) => {
+        toast.success("Tecnologia removida com sucesso");
+        apiGet();
+      })
+      .catch((err) => console.log(err));
+  };
 
   const handleSignIn = ({ title, description }) => {
     const user = { title, description, deploy_url: "https://kenziehub.me" };
@@ -84,21 +98,28 @@ export default function AddWork({ open, handleClose, apiGet }) {
           error={!!errors.description?.message}
         />
 
-        <Button type="submit" fullWidth variant="button" sx={{ mt: 3, mb: 2 }}>
-          Cadastrar
-        </Button>
-        {/* <Button
-          //   onClick={() => history.push("/signup")}
-          type="button"
-          fullWidth
-          variant="buttonGray"
-          sx={{
-            mt: 3,
-            mb: 2,
-          }}
-        >
-          Excluir
-        </Button> */}
+        <Box display="flex">
+          <Button
+            type="submit"
+            fullWidth
+            variant="button"
+            sx={{ mt: 3, mb: 2 }}
+          >
+            Salvar Alterações
+          </Button>
+          <Button
+            onClick={handleRemove}
+            type="button"
+            fullWidth
+            variant="buttonGray"
+            sx={{
+              mt: 3,
+              mb: 2,
+            }}
+          >
+            Excluir
+          </Button>
+        </Box>
       </Box>
     </Modal>
   );
