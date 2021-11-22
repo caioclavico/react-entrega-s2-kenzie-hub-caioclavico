@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Box,
   Container,
@@ -6,11 +7,17 @@ import {
   Typography,
 } from "@material-ui/core";
 import { Add } from "@material-ui/icons";
+import AddWork from "../AddWork";
 
-function MyWork() {
+function MyWork({ apiGet }) {
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
   return (
     <>
       <CssBaseline />
+      <AddWork handleClose={handleClose} open={open} apiGet={apiGet} />
       <Container
         component="main"
         maxWidth="xs"
@@ -28,7 +35,7 @@ function MyWork() {
           >
             Meus Trabalhos
           </Typography>
-          <Fab size="small" color="primary">
+          <Fab size="small" color="primary" onClick={handleOpen}>
             <Add />
           </Fab>
         </Box>

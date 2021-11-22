@@ -15,6 +15,7 @@ import MyWorkCards from "../../components/MyWorkCards";
 import themeDb from "../../styles/themeDb";
 import { Redirect } from "react-router-dom";
 import { useEffect, useState } from "react";
+import api from "../../services/api";
 
 function Dashboard({ auth }) {
   //   const [profile, setProfile] = useState([]);
@@ -23,14 +24,24 @@ function Dashboard({ auth }) {
 
   useEffect(() => {
     setTechs(JSON.parse(localStorage.getItem("KenzieHub:user")).techs);
-  }, [techs]);
+  }, []);
 
   useEffect(() => {
     setWorks(JSON.parse(localStorage.getItem("KenzieHub:user")).works);
-  }, [works]);
+  }, []);
   if (!auth) {
     return <Redirect to="/" />;
   }
+  function apiGet() {
+    api
+      .get(`/users/${JSON.parse(localStorage.getItem("KenzieHub:user")).id}`)
+      .then((response) => {
+        localStorage.setItem("Kenzie-Hub:user", JSON.stringify(response.data));
+        setWorks(response.data.works);
+        setTechs(response.data.techs);
+      });
+  }
+
   return (
     <ThemeProvider theme={themeDb}>
       <CssBaseline />
@@ -65,11 +76,11 @@ function Dashboard({ auth }) {
           }}
         >
           <Container>
-            <MyTech />
+            <MyTech apiGet={apiGet} />
             <MyTechCards techs={techs} />
           </Container>
           <Container>
-            <MyWork />
+            <MyWork apiGet={apiGet} />
             <MyWorkCards works={works} />
           </Container>
         </Box>

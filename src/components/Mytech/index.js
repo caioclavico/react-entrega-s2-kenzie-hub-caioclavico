@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Box,
   Container,
@@ -6,11 +7,16 @@ import {
   Typography,
 } from "@material-ui/core";
 import { Add } from "@material-ui/icons";
+import AddTech from "../AddTech";
 
-function MyTech() {
+function MyTech({ apiGet }) {
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
   return (
     <>
       <CssBaseline />
+      <AddTech handleClose={handleClose} open={open} apiGet={apiGet} />
       <Container
         component="main"
         maxWidth="xs"
@@ -28,7 +34,7 @@ function MyTech() {
           >
             Minhas Tecnologias
           </Typography>
-          <Fab size="small" color="secondary">
+          <Fab size="small" color="secondary" onClick={handleOpen}>
             <Add />
           </Fab>
         </Box>
